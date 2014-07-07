@@ -1,8 +1,20 @@
 __author__ = 'AlZimin'
 
-#from flask import Flask
+import os
+import sqlite3
 from flask import *
+
 app = Flask(__name__)
+app.config.from_object(__name__)
+
+app.config.update(dict(
+    DATABASE=os.path.join(app.root_path, "flaskr.db"),
+    DEBUG=True,
+    SECRET_KEY="development key",
+￼29
+    USERNAME="admin",
+    PASSWORD="default
+))
 
 #@app.route("/")
 #def hello():
