@@ -3,6 +3,8 @@ __author__ = 'AlZimin'
 import os
 import sqlite3
 from flask import *
+import decoder
+import json
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -38,6 +40,17 @@ def init_db():
         with app.open_resource("schema.sql", mode="r") as f:
             db.cursor().executescript(f.read())
         db.commit()
+
+@app.route("/getArticles", methods=["GET"])
+def get_articles():
+    db = get_db()
+    cur = db.execute("select title, text, id from entries order by id desc")
+
+    handler = decoder.SuperHandler()
+    dic = {}
+    for el in cur.fetchall():
+        dic[el[2]] = handler.call_up_encoding(el[0], el[1])
+    return json.dumps(dic)
 
 @app.route("/")
 def show_entries():
